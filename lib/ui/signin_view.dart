@@ -14,7 +14,54 @@ class _SignInViewState extends State<SignInView> {
   //state of the forms and this will be used to valudate the form
   final _formKey = GlobalKey<FormState>();
 
-  bool isValid = false;
+//the controller listens for changes made to the corresponding textfield
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+// state object that channges depending on each textfield value
+  bool isEmailValid = false;
+  bool isPasswordValid = false;
+
+//here,a listener is added to each controller
+//after retrieving the value in the textfield, an if else statement is used to
+//assess the user input and then set state is called
+  @override
+  void initState() {
+    super.initState();
+
+    emailController.addListener(() {
+      if (emailController.text
+          .contains(RegExp(r"^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]+"))) {
+        setState(() {
+          isEmailValid = true;
+        });
+      } else {
+        setState(() {
+          isEmailValid = false;
+        });
+      }
+    });
+    passwordController.addListener(() {
+      if (passwordController.text.length >= 8 &&
+          passwordController.text.length <= 15) {
+        setState(() {
+          isPasswordValid = true;
+        });
+      } else {
+        setState(() {
+          isPasswordValid = false;
+        });
+      }
+    });
+  }
+
+//the dispose method frees the memory allocated to the controllers
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +115,13 @@ class _SignInViewState extends State<SignInView> {
                           //called in the validator property of the form field.The functon returns an error message
                           //if user input is wrong and null if it is correct
                           validator: (value) => Validator.validateEmail(value!),
-                          onSaved: (text) {
-                            setState(() {
-                              isValid = true;
-                            });
-                          },
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                              suffixIcon: isValid
+                              //to show the suffix icon, the tenary operator is used.
+                              //if isEmailValid returns true, the icon is shown
+                              //if it returns false, no icon is shown
+                              suffixIcon: isEmailValid
                                   ? const Icon(
                                       Icons.check_circle,
                                       color: Color(0xff4A80F0),
@@ -103,13 +150,10 @@ class _SignInViewState extends State<SignInView> {
                         child: TextFormField(
                           validator: (value) =>
                               Validator.validatePassword(value!),
-                          onSaved: (text) {
-                            setState(() {
-                              isValid = true;
-                            });
-                          },
+                          controller: passwordController,
+                          obscureText: true,
                           decoration: InputDecoration(
-                              suffixIcon: isValid
+                              suffixIcon: isPasswordValid
                                   ? const Icon(
                                       Icons.check_circle,
                                       color: Color(0xff4A80F0),
@@ -127,7 +171,8 @@ class _SignInViewState extends State<SignInView> {
                     const SizedBox(height: 50),
                     GestureDetector(
                       onTap: () {
-                        //when the signin button is clicked, an if statement is used to check if the form is valid
+                        //when the signin button is clicked, an if statement
+                        //is used to check if the form is valid
                         //it proceeds to show the snackbar if it is true.
                         if (_formKey.currentState!.validate()) {
                           ScaffoldMessenger.of(context)
@@ -141,9 +186,13 @@ class _SignInViewState extends State<SignInView> {
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height / 15,
                         decoration: BoxDecoration(
-                          color: isValid
+                          //to change the color of the button, the tenary operator
+                          //is also used. if both conditions return true,
+                          //the button color without opacity is shown and if either
+                          //returns false, the button color with opacity is shown
+                          color: isEmailValid && isPasswordValid
                               ? const Color(0xff4A80F0)
-                              : Color(0xff4A80F0).withOpacity(0.5),
+                              : const Color(0xff4A80F0).withOpacity(0.2),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Center(
