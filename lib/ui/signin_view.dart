@@ -150,13 +150,16 @@ class _SignInViewState extends State<SignInView> {
                         child: TextFormField(
                           validator: Validator.validatePassword,
                           onChanged: (value) {
-                            if (value.length >= 8 && value.length <= 15) {
+                            String? response =
+                                Validator.validatePassword(value);
+
+                            if (response != null) {
                               setState(() {
-                                isPasswordValid = true;
+                                isPasswordValid = false;
                               });
                             } else {
                               setState(() {
-                                isPasswordValid = false;
+                                isPasswordValid = true;
                               });
                             }
                           },
