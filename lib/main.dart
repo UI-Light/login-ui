@@ -6,6 +6,6 @@ void main() {
   runApp(
     const MaterialApp(
       home: SignInView(), //The material app has a home property and this points
-    ), //to the first screen in the app//
+    ), //to the first screen in the app
   );
 }
