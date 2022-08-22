@@ -4,8 +4,8 @@
 class Validator {
   //this method takes a String parameter and uses if else statment to check if
   //the parameter passes some conditions to be a password
-  static String? validatePassword(String value) {
-    if (value.isEmpty) {
+  static String? validatePassword(String? value) {
+    if (value!.isEmpty) {
       return 'Password required';
     } else if (value.length < 8) {
       return 'Password must be at least 8 characters';

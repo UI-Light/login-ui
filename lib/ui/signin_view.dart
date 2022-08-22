@@ -148,8 +148,18 @@ class _SignInViewState extends State<SignInView> {
                         //to validate the password, the validatepassword function from the validator class
                         //is also passed to this form validator property
                         child: TextFormField(
-                          validator: (value) =>
-                              Validator.validatePassword(value!),
+                          validator: Validator.validatePassword,
+                          onChanged: (value) {
+                            if (value.length >= 8 && value.length <= 15) {
+                              setState(() {
+                                isPasswordValid = true;
+                              });
+                            } else {
+                              setState(() {
+                                isPasswordValid = false;
+                              });
+                            }
+                          },
                           controller: passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
